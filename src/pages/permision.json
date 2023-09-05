@@ -1,0 +1,13 @@
+[
+    "federal.delete_province",
+    "student.delete_educationalqualification",
+    "jet.delete_pinnedapplication",
+    "newsletter.view_newsletter",
+    "website.view_faq",
+    "dashboard.change_userdashboardmodule",
+    "quiz.add_quiz",
+    "course.view_coursecategory",
+    "course.delete_courseuserenroll",
+    "module.delete_module",
+    "course.change_coupon"
+]

@@ -5,16 +5,16 @@ import { useNavigate } from "react-router-dom"
 
 const Login = () => {
     const navigate = useNavigate()
-    const [name, setName] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
+    const [name, setName] = useState<string>('admin')
+    const [password, setPassword] = useState<string>('superadmin')
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        HttpBrowsing.post('/account/obtain-token/', { username: name, password }, false)
+        HttpBrowsing.post('/accounts/login/', { username: name, password }, true)
             .then(res => {
-                localStorage.setItem("access_token", res.data.token);
+                localStorage.setItem("access_token", res.data.jwt_token.access_token);
                 // localStorage.setItem("refreshToken", res.data.refreshToken);
                 navigate('/dashboard');
             })

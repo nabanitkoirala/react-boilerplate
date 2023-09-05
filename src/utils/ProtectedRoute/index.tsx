@@ -7,13 +7,37 @@ interface defaultProps {
     children: ReactNode
     isLoginPage?: boolean
     loginPage?: React.ComponentType<unknown>;
+    adminRoute?: adminRouteProps;
 }
+
+interface appModals {
+    api_link: string;
+    verbose_name_plural: string;
+    verbose_name: string;
+    model_name: string;
+}
+interface adminRouteDetails {
+    verbose_name: string;
+    label: string;
+    app_name: string;
+    app_models: appModals[]
+}
+interface adminRouteProps {
+    adminComponent: React.ComponentType<any>
+    adminRoutes: adminRouteDetails[]
+    adminLayout: React.ComponentType<any>
+
+}
+
+
+
 const ACCESS_TOKEN_NAME = import.meta.env.VITE_APP_ACCESS_TOKEN_NAME || process.env.REACT_APP_ACCESS_TOKEN_NAME;
 const ProtectedRoute = (props: defaultProps) => {
     const {
         children,
         isLoginPage = false,
-        loginPage
+        loginPage,
+        adminRoute
     } = props;
 
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
@@ -25,6 +49,14 @@ const ProtectedRoute = (props: defaultProps) => {
     useEffect(() => {
         checkForAuthentication()
     }, [children])
+
+
+
+
+
+
+    console.log("This is is loggin", isLoggedIn)
+    console.log("This is is isLoginPage", isLoginPage)
     // fetch(import.meta.env.VITE_APP_BACKEND_URL + "/auth/me", {
     //     credentials: 'include',
 
@@ -35,7 +67,15 @@ const ProtectedRoute = (props: defaultProps) => {
     //         setIsLoggedIn(false);
     //     }
     // })
-    if (isLoggedIn === true) {
+    if (isLoggedIn && isLoginPage && adminRoute) {
+        const Login = loginPage
+        console.log("entered here")
+        return (
+            <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_models[0].verbose_name}`} />
+            // <Login />
+        )
+    }
+    else if (isLoggedIn === true) {
         return (
             <>
                 {children}
@@ -43,14 +83,16 @@ const ProtectedRoute = (props: defaultProps) => {
         )
     } else if (isLoggedIn === false && !isLoginPage) {
         return (
-            <Navigate to='/' />
+            <Navigate to='/login' />
         )
     } else if (isLoggedIn === false && isLoginPage) {
         const Login = loginPage
         return (
+            // <Navigate to="/login" />
             <Login />
         )
     }
+
     else {
         return (
             <>

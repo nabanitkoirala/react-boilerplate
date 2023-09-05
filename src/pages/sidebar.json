@@ -1,0 +1,251 @@
+[
+    {
+        "verbose_name": "Authentication and Authorization",
+        "app_name": "auth",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/auth/permissions/",
+                "verbose_name": "permissions",
+                "model_name": "permission"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/auth/groups/",
+                "verbose_name": "groups",
+                "model_name": "group"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Federal",
+        "app_name": "federal",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/federal/Countries/",
+                "verbose_name": "Countries",
+                "model_name": "country"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/federal/provinces/",
+                "verbose_name": "provinces",
+                "model_name": "province"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/federal/districts/",
+                "verbose_name": "districts",
+                "model_name": "district"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/federal/municipalities/",
+                "verbose_name": "municipalities",
+                "model_name": "municipality"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/federal/wards/",
+                "verbose_name": "wards",
+                "model_name": "ward"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Authentication",
+        "app_name": "authentication",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/authentication/users/",
+                "verbose_name": "users",
+                "model_name": "user"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/authentication/user-app-devices/",
+                "verbose_name": "user app devices",
+                "model_name": "userappdevice"
+            }
+        ]
+    },
+    {
+        "verbose_name": "User/Password Request",
+        "app_name": "userrequest",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/userrequest/New-UserName-Request/",
+                "verbose_name": "New UserName Request",
+                "model_name": "usernamerequest"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/userrequest/New-Password-Request/",
+                "verbose_name": "New Password Request",
+                "model_name": "passwordresetrequest"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Incident_Manager",
+        "app_name": "incident_manager",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/incident_manager/incident-types/",
+                "verbose_name": "incident types",
+                "model_name": "incidenttype"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/incident_manager/incidents/",
+                "verbose_name": "incidents",
+                "model_name": "incident"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/incident_manager/incident-attachments/",
+                "verbose_name": "incident attachments",
+                "model_name": "incidentattachment"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Incident_Series",
+        "app_name": "incident_series",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/incident_series/incident-logs/",
+                "verbose_name": "incident logs",
+                "model_name": "incidentlog"
+            }
+        ]
+    },
+    {
+        "verbose_name": "People_Loss",
+        "app_name": "people_loss",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/people_loss/People-losses/",
+                "verbose_name": "People losses",
+                "model_name": "peopleloss"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/people_loss/people-loss-records/",
+                "verbose_name": "people loss records",
+                "model_name": "peoplelossrecord"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Family_Loss",
+        "app_name": "family_loss",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/family_loss/Family-Losses/",
+                "verbose_name": "Family Losses",
+                "model_name": "familyloss"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/family_loss/family-loss-records/",
+                "verbose_name": "family loss records",
+                "model_name": "familylossrecord"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Infrastructure_Loss",
+        "app_name": "infrastructure_loss",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/infrastructure_loss/infrastructure-types/",
+                "verbose_name": "infrastructure types",
+                "model_name": "infrastructuretype"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/infrastructure_loss/infrastructure-losses/",
+                "verbose_name": "infrastructure losses",
+                "model_name": "infrastructureloss"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/infrastructure_loss/infrastructure-loss-records/",
+                "verbose_name": "infrastructure loss records",
+                "model_name": "infrastructurelossrecord"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Agriculture_Loss",
+        "app_name": "agriculture_loss",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/agriculture_loss/agriculture-types/",
+                "verbose_name": "agriculture types",
+                "model_name": "agriculturetype"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/agriculture_loss/agriculture-losses/",
+                "verbose_name": "agriculture losses",
+                "model_name": "agricultureloss"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/agriculture_loss/agriculture-loss-records/",
+                "verbose_name": "agriculture loss records",
+                "model_name": "agriculturelossrecord"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Livestock_Loss",
+        "app_name": "livestock_loss",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/livestock_loss/livestock-types/",
+                "verbose_name": "livestock types",
+                "model_name": "livestocktype"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/livestock_loss/Live-stock-losses/",
+                "verbose_name": "Live stock losses",
+                "model_name": "livestockloss"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/livestock_loss/livestock-loss-records/",
+                "verbose_name": "livestock loss records",
+                "model_name": "livestocklossrecord"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Website",
+        "app_name": "website",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/website/feedbacks/",
+                "verbose_name": "feedbacks",
+                "model_name": "feedback"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/website/press-releases/",
+                "verbose_name": "press releases",
+                "model_name": "pressrelease"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Relief",
+        "app_name": "relief",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/relief/relief-fund-types/",
+                "verbose_name": "relief fund types",
+                "model_name": "relieffundtype"
+            },
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/relief/relief-fund-contributors/",
+                "verbose_name": "relief fund contributors",
+                "model_name": "relieffundcontributor"
+            }
+        ]
+    },
+    {
+        "verbose_name": "Message_Manager",
+        "app_name": "message_manager",
+        "app_models": [
+            {
+                "api_link": "http://192.168.1.112:8000/api/v1/message_manager/user-messages/",
+                "verbose_name": "user messages",
+                "model_name": "usermessage"
+            }
+        ]
+    }
+]
