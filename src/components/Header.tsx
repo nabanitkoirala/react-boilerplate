@@ -5,7 +5,7 @@ import moonIcon from "../assets/Moon.svg";
 import squareIcon from "../assets/Square.svg";
 import bellIcon from "../assets/Bell.svg";
 import avatarIcon from "../assets/Avatar.svg";
-import Browsing from "../utils/HttpBrowsing";
+import Browsing from "../baseRouting_network_call/HttpBrowsing";
 import { useNavigate } from "react-router";
 
 const Header = () => {

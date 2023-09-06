@@ -17,7 +17,7 @@ const DropdownSlider = ({ icon, title, link, options }) => {
     };
     document.addEventListener("mousedown", handleClickOutside);
   }, [DropdownRef]);
-  console.log("options", options)
+
   return (
     <div key={title + link} ref={DropdownRef} className="flex flex-col">
 

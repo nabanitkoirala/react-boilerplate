@@ -1,4 +1,8 @@
 [
+    "auth.add_permission",
+    "auth.delete_group",
+    "auth.change_group",
+    "auth.change_permission",
     "federal.delete_province",
     "student.delete_educationalqualification",
     "jet.delete_pinnedapplication",

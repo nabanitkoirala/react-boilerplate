@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import drawerIcon from "../assets/drawer.svg";
 import Header from "../components/Header";
@@ -21,13 +21,13 @@ interface adminRouteProps {
 
 }
 interface LayoutProps {
-    children: React.ComponentType<any>;
+    children: ReactNode;
     routeDetails: adminRouteProps;
 }
 
 
 const Layout: React.FC<LayoutProps> = ({ routeDetails, children }) => {
-    const [showSidebar, setShowSidebar] = useState<boolean>(false);
+    const [showSidebar, setShowSidebar] = useState<boolean>(true);
     console.log("routeDetails", routeDetails)
     return (
         <div className="flex">
