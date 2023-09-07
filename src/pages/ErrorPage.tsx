@@ -5,9 +5,9 @@ import errorImg from "../assets/page-misc-error-light.svg";
 import { useNavigate } from "react-router-dom";
 
 const ErrorPage = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const backToHome = (e) => {
-    console.log("path");
+
     e.preventDefault();
     navigate("/");
   };

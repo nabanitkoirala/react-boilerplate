@@ -5,14 +5,14 @@ import moonIcon from "../assets/Moon.svg";
 import squareIcon from "../assets/Square.svg";
 import bellIcon from "../assets/Bell.svg";
 import avatarIcon from "../assets/Avatar.svg";
-import Browsing from "../baseRouting_network_call/HttpBrowsing";
 import { useNavigate } from "react-router";
+import HttpBrowsing from "../baseRouting_network_call/HttpBrowsing";
 
 const Header = () => {
   const navigate = useNavigate();
   const handleLogout = (e) => {
     e.preventDefault();
-    Browsing.get('/auth/logout')
+    HttpBrowsing.post('/logout/', {})
       .then(res => {
         localStorage.clear()
         navigate('/');

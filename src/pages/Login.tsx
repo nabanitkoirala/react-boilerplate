@@ -1,20 +1,26 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import HttpBrowsing from "../baseRouting_network_call/HttpBrowsing"
 import { useNavigate } from "react-router-dom"
+import { TokenStore_Context } from "../baseRouting_network_call/Store"
+
 
 
 const Login = () => {
     const navigate = useNavigate()
-    const [name, setName] = useState<string>('admin')
-    const [password, setPassword] = useState<string>('superadmin')
+    const [name, setName] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [tokenStore, setTokenStore] = useContext(TokenStore_Context)
+
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        HttpBrowsing.post('/accounts/login/', { username: name, password }, true)
+        HttpBrowsing.post('/login/', { username: name, password }, true)
             .then(res => {
-                localStorage.setItem("access_token", res.data.jwt_token.access_token);
+
+                setTokenStore(res.data.token)
+                localStorage.setItem("access_token", res.data.token);
                 // localStorage.setItem("refreshToken", res.data.refreshToken);
                 navigate('/dashboard');
             })

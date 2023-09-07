@@ -54,7 +54,7 @@ const Sidebar: React.FC<LayoutProps> = ({ setShow, routeDetails }) => {
     setShow(false);
   };
 
-  console.log("routeDetails", routeDetails)
+
   const data = routeDetails;
   const mainSidebarDetails = data && data.map((item: { verbose_name: string; app_name: string; app_models: any[]; }) => {
     return ({
@@ -72,7 +72,7 @@ const Sidebar: React.FC<LayoutProps> = ({ setShow, routeDetails }) => {
     })
   })
 
-  console.log("This is main sidebar details", mainSidebarDetails)
+
 
   const SidebarMenus = [
     {
@@ -404,7 +404,7 @@ const Sidebar: React.FC<LayoutProps> = ({ setShow, routeDetails }) => {
     // },
   ];
 
-  console.log("This is pathname", pathname)
+
   return (
     <>
       <div className="h-screen absolute inset-0 md:relative ">

@@ -4,6 +4,8 @@ import edit from '../assets/edit.svg';
 import remove from '../assets/delete.svg';
 import { useLocation } from "react-router-dom";
 import { PermissionChecker } from "../utils/PermissionChecker";
+import { useEffect, useState } from "react";
+import HttpBrowsing from "../baseRouting_network_call/HttpBrowsing";
 
 interface userPermission {
     userPermission: string[]
@@ -32,10 +34,64 @@ interface propsDetails {
 }
 
 const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }) => {
-    console.log("This is user permissions", userPermission)
-    console.log("This is route details", routeDetails)
+
+    const [listView, setListView] = useState({});
+    const [tableHeader, setTableHeader] = useState([]);
+    const [tableData, setTableData] = useState([]);
+    const [queryFormData, setQueryFormData] = useState('')
     const { pathname } = useLocation();
     const { permissionCheckDelete, permissionCheckAdd, permissionCheckChange } = PermissionChecker(pathname, userPermission)
+
+    const splitPath = pathname.split('/');
+    const appName = splitPath[2];
+    const modalName = splitPath[3];
+    const apiLink = routeDetails && routeDetails.length && routeDetails.filter((item) => item.app_name === appName)[0].app_models
+        .filter(i => i.model_name === modalName)[0].api_link.split('/v1')[1];
+    console.log("api link", apiLink)
+    useEffect(() => {
+        HttpBrowsing.get(`${apiLink}list-views/`)
+            .then((res) => {
+                setListView(res.data)
+            })
+            .catch((err) => console.log("err", err))
+    }, [pathname])
+
+    useEffect(() => {
+        if (Object.keys(listView).length) {
+            const header = listView.list_fields.map(i => i.verbose_name);
+            const queryForData = listView.list_fields.map(i => i.name).join(',');
+            setQueryFormData(queryForData)
+            console.log("queryForm", queryForData)
+            setTableHeader(header)
+        }
+
+    }, [listView])
+
+    useEffect(() => {
+        if (tableHeader.length) {
+
+            HttpBrowsing.get(`${apiLink}?fields=${queryFormData}`)
+                .then((res) => {
+                    console.log("This is list", listView.list_fields)
+                    console.log("This is table data", tableData)
+                    const data = res.data.results.map((item) => {
+                        return (
+                            Object.values(item)
+                        )
+                    })
+
+                    console.log("This is optimal data", data)
+
+                    setTableData(data)
+                })
+                .catch((err) => console.log("err", err))
+        }
+    }, [tableHeader])
+
+    console.log("This is header", listView)
+    console.log("This are headers", tableHeader)
+    console.log("This is data body", tableData)
+
 
     return (
         <div className="admin-table px-6 py-6 flex flex-col gap-5">
@@ -48,113 +104,41 @@ const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }
 
             <table>
                 <tr>
-                    <th>Company</th>
-                    <th>Contact</th>
-                    <th>Country</th>
-                    <th>Action</th>
+                    {
+                        tableHeader.length ?
+                            <>
+                                {tableHeader.map((item) => (
+                                    <>
+                                        <th key={item} >{item}</th>
+
+                                    </>
+
+                                ))}
+                                <th>Action</th>
+                            </>
+                            : ''
+                    }
+
                 </tr>
-                <tr>
-                    <td>Alfreds Futterkiste</td>
-                    <td>Maria Anders</td>
-                    <td>Germany</td>
-                    <td>
-                        <div className="flex gap-3">
-                            {
-                                permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
-                            }
+                {
+                    tableData.length && tableData.map((item) => (
+                        <tr key={item[0]} >
+                            {item.map((d, index) => <td key={index}>{d}</td>)}
+                            <td>
+                                <div className="flex gap-3">
+                                    {
+                                        permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
+                                    }
 
-                            {
-                                permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
-                            }
+                                    {
+                                        permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
+                                    }
 
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Centro comercial Moctezuma</td>
-                    <td>Francisco Chang</td>
-                    <td>Mexico</td>
-                    <td>
-                        <div className="flex gap-3">
-                            {
-                                permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
-                            }
-
-                            {
-                                permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
-                            }
-
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Ernst Handel</td>
-                    <td>Roland Mendel</td>
-                    <td>Austria</td>
-                    <td>
-                        <div className="flex gap-3">
-                            {
-                                permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
-                            }
-
-                            {
-                                permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
-                            }
-
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Island Trading</td>
-                    <td>Helen Bennett</td>
-                    <td>UK</td>
-                    <td>
-                        <div className="flex gap-3">
-                            {
-                                permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
-                            }
-
-                            {
-                                permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
-                            }
-
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Laughing Bacchus Winecellars</td>
-                    <td>Yoshi Tannamuri</td>
-                    <td>Canada</td>
-                    <td>
-                        <div className="flex gap-3">
-                            {
-                                permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
-                            }
-
-                            {
-                                permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
-                            }
-
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Magazzini Alimentari Riuniti</td>
-                    <td>Giovanni Rovelli</td>
-                    <td>Italy</td>
-                    <td>
-                        <div className="flex gap-3">
-                            {
-                                permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
-                            }
-
-                            {
-                                permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
-                            }
-
-                        </div>
-                    </td>
-                </tr>
+                                </div>
+                            </td>
+                        </tr>
+                    ))
+                }
             </table>
         </div>
     )

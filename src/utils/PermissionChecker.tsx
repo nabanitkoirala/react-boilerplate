@@ -1,6 +1,7 @@
 
 
 export const PermissionChecker = (pathname: string, userPermission: string[]) => {
+
     const splitPath = pathname.split('/');
     const appName = splitPath[2];
     const modalName = splitPath[3];

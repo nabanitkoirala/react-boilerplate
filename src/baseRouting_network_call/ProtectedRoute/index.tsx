@@ -55,8 +55,7 @@ const ProtectedRoute = (props: defaultProps) => {
 
 
 
-    console.log("This is is loggin", isLoggedIn)
-    console.log("This is is isLoginPage", isLoginPage)
+
     // fetch(import.meta.env.VITE_APP_BACKEND_URL + "/auth/me", {
     //     credentials: 'include',
 
@@ -69,7 +68,7 @@ const ProtectedRoute = (props: defaultProps) => {
     // })
     if (isLoggedIn && isLoginPage && adminRoute) {
         const Login = loginPage
-        console.log("entered here")
+
         return (
             <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_models[0].verbose_name}`} />
             // <Login />

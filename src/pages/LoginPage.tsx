@@ -13,7 +13,7 @@ const LoginPage = () => {
     password: "",
   });
   const navigate = useNavigate()
-  console.log("user", user);
+
   const [errors, setErrors] = useState({});
   const [firstSubmit, setFirstSubmit] = useState(false)
   const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -21,7 +21,7 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setFirstSubmit(true);
-    console.log("This is validate form", validateForm())
+
     if (validateForm()) {
       // console.log(e, "event");
       // console.log(email, "email");
@@ -40,7 +40,7 @@ const LoginPage = () => {
     }
   };
   const handleEmail = (e) => {
-    console.log("e", e.target.value);
+
     setUser((prev) => ({ ...prev, email: e.target.value }));
     // setUser(email);
   };
@@ -49,8 +49,8 @@ const LoginPage = () => {
   };
 
   const validateForm = () => {
-    let U = user;
-    let E = errors;
+    const U = user;
+    const E = errors;
     let isValid = true;
     const pattern = new RegExp(
       /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i

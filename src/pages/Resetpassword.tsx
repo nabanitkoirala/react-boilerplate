@@ -18,7 +18,7 @@ const Resetpassword = () => {
         .then(res => {
           // localStorage.setItem("accessToken", res.data.accessToken);
           // localStorage.setItem("refreshToken", res.data.refreshToken);
-          console.log("This is response", res.data)
+
           navigate('/');
         })
         .catch(err => {
@@ -26,11 +26,9 @@ const Resetpassword = () => {
 
         });
     }
-    console.log(e, "event");
-    console.log(newPassword, "newPassword");
-    console.log(confirmPassword, "password");
+
   };
-  console.log("This is params id", id)
+
   return (
     <>
       <div className="flex w-full h-screen justify-between">

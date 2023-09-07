@@ -12,7 +12,8 @@ interface appModals {
 interface adminRouteDetails {
     verbose_name: string;
     app_name: string;
-    app_models: appModals[]
+    app_models: appModals[];
+    app_icon: string;
 }
 interface adminRouteProps {
     adminComponent: React.ComponentType<any>
@@ -28,7 +29,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ routeDetails, children }) => {
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
-    console.log("routeDetails", routeDetails)
+
     return (
         <div className="flex">
             {showSidebar ? <Sidebar setShow={setShowSidebar} routeDetails={routeDetails} /> : null}

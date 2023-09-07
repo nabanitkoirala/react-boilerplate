@@ -18,28 +18,28 @@ function getHeaders(secure = false) {
     } else {
         headers = {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN_NAME),
+            Authorization: "Token " + localStorage.getItem(ACCESS_TOKEN_NAME),
         };
     }
     return headers;
 }
 
-function get(url: string, issecure: boolean) {
+function get(url: string, issecure?: boolean) {
     return https.get(url, {
         headers: getHeaders(issecure),
     });
 }
-function post(url: string, data: object, isSecure: boolean | undefined) {
+function post(url: string, data: object, isSecure?: boolean | undefined) {
     return https.post(url, data, {
         headers: getHeaders(isSecure),
     });
 }
-function put(url: string, data: object, issecure: boolean | undefined) {
+function put(url: string, data: object, issecure?: boolean | undefined) {
     return https.put(url, data, {
         headers: getHeaders(issecure),
     });
 }
-function remove(url: string, isSecure: boolean | undefined) {
+function remove(url: string, isSecure?: boolean | undefined) {
     return https.delete(url, { headers: getHeaders(isSecure) });
 }
 

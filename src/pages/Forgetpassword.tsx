@@ -6,7 +6,7 @@ import { FaLessThan } from "react-icons/fa";
 
 const Forgetpassword = () => {
   const [email, setEmail] = useState("");
-  console.log(email,'email');
+
   const handleSubmit = (e) => {
     console.log(e, "event");
     console.log(email, "email");

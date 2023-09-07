@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import ProtectedRoute from "../ProtectedRoute";
-
+import { TokenStore_Context } from "../../baseRouting_network_call/Store"
 
 
 interface routeDetails {
@@ -31,7 +31,8 @@ interface appModals {
 interface adminRouteDetails {
     verbose_name: string;
     app_name: string;
-    app_models: appModals[]
+    app_models: appModals[];
+    app_icon: string;
 }
 interface adminRouteProps {
     adminComponent: React.ComponentType<any>
@@ -51,12 +52,18 @@ interface RoutingProps {
 
 
 
-const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRoute, userPermission }) => {
-    console.log("This is admin route", adminRoute)
+const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRoute, userPermission, handleToken }) => {
+    const [tokenStore, setTokenStore] = useContext(TokenStore_Context)
+
     const AdminLayout = adminRoute.adminLayout;
     const AdminComponent = adminRoute.adminComponent;
     const Login = loginPage;
-    console.log("This is adminRoute", adminRoute)
+    useEffect(() => {
+        if (tokenStore) {
+            handleToken(tokenStore)
+        }
+    }, [tokenStore])
+
     return (
         <Router>
             <Routes>
@@ -86,7 +93,7 @@ const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRout
                         // const Component = adminRoute.adminComponent;
                         // const AdminLayout = adminRoute.adminLayout;
                         const routeMap = item.app_models.map((route) => {
-                            console.log("This is route", route)
+
                             return <Route
                                 key={route.model_name}
                                 path={`/admin/${item.app_name}/${route.model_name}`}
@@ -117,7 +124,9 @@ const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRout
                     path="/dashboard"
                     element={
                         <ProtectedRoute isLoginPage={true} loginPage={loginPage} >
-                            <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_name}/${adminRoute.adminRoutes[0].app_models[0].model_name}`} />
+                            {adminRoute && adminRoute.adminRoutes.length ?
+                                <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_name}/${adminRoute.adminRoutes[0].app_models[0].model_name}`} />
+                                : ''}
                         </ProtectedRoute>
                     }
                 />
@@ -125,20 +134,13 @@ const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRout
                     path="/admin"
                     element={
                         <ProtectedRoute isLoginPage={true} loginPage={loginPage} >
-                            <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_name}/${adminRoute.adminRoutes[0].app_models[0].model_name}`} />
+                            {adminRoute && adminRoute.adminRoutes.length
+                                ? <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_name}/${adminRoute.adminRoutes[0].app_models[0].model_name}`} />
+                                : ''}
                         </ProtectedRoute>
                     }
                 />
-                {/* <Route
-                    path="/login"
-                    element={
-                        <ProtectedRoute isLoginPage={true}
-                            adminRoute={adminRoute}
-                        >
-                            <Login />
-                        </ProtectedRoute>
-                    }
-                /> */}
+
 
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
