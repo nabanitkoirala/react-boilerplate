@@ -16,3 +16,32 @@ export const PermissionChecker = (pathname: string, userPermission: string[]) =>
     })
 }
 
+
+export const ForeignKeyToNameConverter = (tableData: any[], foreignKeyList: never[]) => {
+    // Create an async function to process the data
+    async function processData(foreignKeyList: never[]) {
+        const result = {};
+        for (const itemB of foreignKeyList) {
+            const key = itemB.name;
+            const values = tableData.map(itemA => itemA[key]);
+            const nonRepeatValues = [...new Set(values)].join(',')
+            const finalValues = nonRepeatValues ? await fetchAndParseData(itemB.api_link, nonRepeatValues) : null;
+            result[key] = finalValues;
+        }
+        return result;
+    }
+
+    // Function to fetch and parse data from the API
+    async function fetchAndParseData(apiLink: string, nonRepeatValues: string) {
+        const response = await fetch(`${apiLink}?ids=${nonRepeatValues}`, {
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('access_token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const resp = await response.json();
+        return resp.results;
+    }
+    return processData(foreignKeyList)
+}
+

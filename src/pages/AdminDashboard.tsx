@@ -3,8 +3,8 @@ import BorderButton from "../components/Buttons/BorderButton";
 import edit from '../assets/edit.svg';
 import remove from '../assets/delete.svg';
 import { useLocation } from "react-router-dom";
-import { PermissionChecker } from "../utils/PermissionChecker";
-import { useEffect, useState } from "react";
+import { ForeignKeyToNameConverter, PermissionChecker } from "../utils/PermissionChecker";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
 import HttpBrowsing from "../baseRouting_network_call/HttpBrowsing";
 
 interface userPermission {
@@ -23,6 +23,7 @@ interface adminRouteDetails {
     app_models: appModals[]
 }
 interface adminRouteProps {
+    length: adminRouteProps;
     adminComponent: React.ComponentType<any>
     adminRoutes: adminRouteDetails[]
     adminLayout: React.ComponentType<any>
@@ -36,32 +37,45 @@ interface propsDetails {
 const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }) => {
 
     const [listView, setListView] = useState({});
+
+    const [dynamicFilterList, setDynamicFilterList] = useState([])
+
+
     const [tableHeader, setTableHeader] = useState([]);
     const [tableData, setTableData] = useState([]);
     const [queryFormData, setQueryFormData] = useState('')
     const { pathname } = useLocation();
+
+    const [foreignKeyList, setForeignKeyList] = useState([]);
+
+
     const { permissionCheckDelete, permissionCheckAdd, permissionCheckChange } = PermissionChecker(pathname, userPermission)
 
     const splitPath = pathname.split('/');
     const appName = splitPath[2];
     const modalName = splitPath[3];
-    const apiLink = routeDetails && routeDetails.length && routeDetails.filter((item) => item.app_name === appName)[0].app_models
+    const apiLink = routeDetails && routeDetails.length && routeDetails.filter((item: { app_name: string; }) => item.app_name === appName)[0].app_models
         .filter(i => i.model_name === modalName)[0].api_link.split('/v1')[1];
-    console.log("api link", apiLink)
+
     useEffect(() => {
         HttpBrowsing.get(`${apiLink}list-views/`)
             .then((res) => {
                 setListView(res.data)
+                setDynamicFilterList(res.data.filters)
+                const fieldWithForeignKey = res.data.list_fields && res.data.list_fields
+                    .filter((item: { field_type: string; }) => item.field_type === "foreign key").map((i: { api_link: string; field_type: string; name: string; }) => ({ api_link: i.api_link, field_type: i.field_type, name: i.name }));
+                setForeignKeyList(fieldWithForeignKey)
+
             })
             .catch((err) => console.log("err", err))
     }, [pathname])
 
     useEffect(() => {
         if (Object.keys(listView).length) {
-            const header = listView.list_fields.map(i => i.verbose_name);
-            const queryForData = listView.list_fields.map(i => i.name).join(',');
+            const header = listView.list_fields.map((i: { verbose_name: string; }) => i.verbose_name);
+            const queryForData = listView.list_fields.map((i: { name: string; }) => i.name).join(',');
             setQueryFormData(queryForData)
-            console.log("queryForm", queryForData)
+
             setTableHeader(header)
         }
 
@@ -72,30 +86,63 @@ const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }
 
             HttpBrowsing.get(`${apiLink}?fields=${queryFormData}`)
                 .then((res) => {
-                    console.log("This is list", listView.list_fields)
-                    console.log("This is table data", tableData)
-                    const data = res.data.results.map((item) => {
-                        return (
-                            Object.values(item)
-                        )
-                    })
+                    // Initialize an empty result object
 
-                    console.log("This is optimal data", data)
+                    ForeignKeyToNameConverter(res.data.results, foreignKeyList).then((foreignKeyDataList) => {
 
-                    setTableData(data)
+                        const data = res.data.results.map((item) => {
+
+                            foreignKeyList.map((d) => {
+                                const data = item[d.name] = foreignKeyDataList[d.name]
+                                    ? foreignKeyDataList[d.name].filter(rslt => rslt.id === item[d.name])[0].value
+                                    : "-"
+
+                                return data
+                            })
+
+                            return (
+                                Object.values(item)
+                            )
+                        })
+
+                        setTableData(data)
+
+
+                    });
+
+
                 })
                 .catch((err) => console.log("err", err))
         }
     }, [tableHeader])
 
-    console.log("This is header", listView)
-    console.log("This are headers", tableHeader)
-    console.log("This is data body", tableData)
-
-
     return (
         <div className="admin-table px-6 py-6 flex flex-col gap-5">
-            <div className="flex justify-end" >
+            <div className="flex justify-end flex-col" >
+                {dynamicFilterList.length ? dynamicFilterList.map((item, index) => (<div key={index} >
+                    {
+                        item.schema.enum && item.schema.enum.length ?
+                            <div className="flex flex-col" >
+                                <label htmlFor="cars">Choose a car:</label>
+                                <select key={item.name} name="cars" id="cars">
+                                    <option>Choose a car</option>
+                                    {item.schema.enum.map((d, ind) => (
+                                        <>
+                                            <option value={d[0]}>{d[1]}</option>
+                                        </>
+                                    ))}
+                                </select>
+                            </div>
+                            :
+                            <div className="flex flex-col" >
+                                <label htmlFor="cars">{item.name}</label>
+                                <input type="text" placeholder={item.name} />
+                            </div>
+                    }
+
+                </div>
+
+                )) : ''}
                 {
                     permissionCheckAdd.length ? <BorderButton title={'CREATE'} /> : ''
                 }
@@ -123,7 +170,7 @@ const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }
                 {
                     tableData.length && tableData.map((item) => (
                         <tr key={item[0]} >
-                            {item.map((d, index) => <td key={index}>{d}</td>)}
+                            {item.map((d: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined, index: Key | null | undefined) => <td key={index}>{d}</td>)}
                             <td>
                                 <div className="flex gap-3">
                                     {

@@ -46,6 +46,7 @@ interface RoutingProps {
     loginPage: React.ComponentType<any>;
     adminRoute: adminRouteProps;
     userPermission: string[];
+    handleToken: () => void;
 
 }
 
