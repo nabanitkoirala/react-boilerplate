@@ -4,7 +4,7 @@ import edit from '../assets/edit.svg';
 import remove from '../assets/delete.svg';
 import { useLocation } from "react-router-dom";
 import { ForeignKeyToNameConverter, PermissionChecker } from "../utils/PermissionChecker";
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useRef, useState } from "react";
 import HttpBrowsing from "../baseRouting_network_call/HttpBrowsing";
 
 interface userPermission {
@@ -36,6 +36,9 @@ interface propsDetails {
 
 const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }) => {
 
+    const apiListViewCall = useRef(true);
+    const apiTableDataCall = useRef(true);
+
     const [listView, setListView] = useState({});
 
     const [dynamicFilterList, setDynamicFilterList] = useState([])
@@ -57,17 +60,24 @@ const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }
     const apiLink = routeDetails && routeDetails.length && routeDetails.filter((item: { app_name: string; }) => item.app_name === appName)[0].app_models
         .filter(i => i.model_name === modalName)[0].api_link.split('/v1')[1];
 
-    useEffect(() => {
-        HttpBrowsing.get(`${apiLink}list-views/`)
-            .then((res) => {
-                setListView(res.data)
-                setDynamicFilterList(res.data.filters)
-                const fieldWithForeignKey = res.data.list_fields && res.data.list_fields
-                    .filter((item: { field_type: string; }) => item.field_type === "foreign key").map((i: { api_link: string; field_type: string; name: string; }) => ({ api_link: i.api_link, field_type: i.field_type, name: i.name }));
-                setForeignKeyList(fieldWithForeignKey)
 
-            })
-            .catch((err) => console.log("err", err))
+    useEffect(() => {
+        if (apiListViewCall.current) {
+            apiListViewCall.current = false;
+            HttpBrowsing.get(`${apiLink}list-views/`)
+                .then((res) => {
+                    setListView(res.data)
+                    setDynamicFilterList(res.data.filters || [])
+                    const fieldWithForeignKey = res.data.list_fields && res.data.list_fields
+                        .filter((item: { field_type: string; }) => item.field_type === "foreign key").map((i: { api_link: string; field_type: string; name: string; }) => ({ api_link: i.api_link, field_type: i.field_type, name: i.name }));
+                    setForeignKeyList(fieldWithForeignKey)
+
+                })
+                .catch((err) => console.log("err", err))
+        }
+        return () => {
+            apiListViewCall.current = true;
+        };
     }, [pathname])
 
     useEffect(() => {
@@ -82,51 +92,58 @@ const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }
     }, [listView])
 
     useEffect(() => {
-        if (tableHeader.length) {
+        if (apiTableDataCall.current) {
+            apiTableDataCall.current = false
+            if (tableHeader.length) {
 
-            HttpBrowsing.get(`${apiLink}?fields=${queryFormData}`)
-                .then((res) => {
-                    // Initialize an empty result object
+                HttpBrowsing.get(`${apiLink}?fields=${queryFormData}`)
+                    .then((res) => {
+                        // Initialize an empty result object
 
-                    ForeignKeyToNameConverter(res.data.results, foreignKeyList).then((foreignKeyDataList) => {
+                        ForeignKeyToNameConverter(res.data.results, foreignKeyList).then((foreignKeyDataList) => {
 
-                        const data = res.data.results.map((item) => {
+                            const data = res.data.results.map((item) => {
 
-                            foreignKeyList.map((d) => {
-                                const data = item[d.name] = foreignKeyDataList[d.name]
-                                    ? foreignKeyDataList[d.name].filter(rslt => rslt.id === item[d.name])[0].value
-                                    : "-"
+                                foreignKeyList.map((d) => {
+                                    const data = item[d.name] = foreignKeyDataList[d.name]
+                                        ? foreignKeyDataList[d.name].filter(rslt => rslt.id === item[d.name])[0].value
+                                        : "-"
 
-                                return data
+                                    return data
+                                })
+
+                                return (
+                                    Object.values(item)
+                                )
                             })
 
-                            return (
-                                Object.values(item)
-                            )
-                        })
-
-                        setTableData(data)
+                            setTableData(data)
 
 
-                    });
+                        });
 
 
-                })
-                .catch((err) => console.log("err", err))
+                    })
+                    .catch((err) => console.log("err", err))
+            }
         }
-    }, [tableHeader])
+        return () => {
+            apiTableDataCall.current = true;
+        };
 
+    }, [tableHeader])
+    console.log("dynamicFilterList", dynamicFilterList)
     return (
         <div className="admin-table px-6 py-6 flex flex-col gap-5">
             <div className="flex justify-end flex-col" >
                 {dynamicFilterList.length ? dynamicFilterList.map((item, index) => (<div key={index} >
                     {
-                        item.schema.enum && item.schema.enum.length ?
+                        item.choices && item.choices.length ?
                             <div className="flex flex-col" >
                                 <label htmlFor="cars">Choose a car:</label>
                                 <select key={item.name} name="cars" id="cars">
                                     <option>Choose a car</option>
-                                    {item.schema.enum.map((d, ind) => (
+                                    {item.choices.map((d, ind) => (
                                         <>
                                             <option value={d[0]}>{d[1]}</option>
                                         </>

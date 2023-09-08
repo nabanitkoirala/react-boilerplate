@@ -7,7 +7,7 @@ import Layout from './pages/Layout';
 import sidebar from './pages/sidebar.json'
 import AdminDashboard from './pages/AdminDashboard';
 import userPermission from './pages/permision.json';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HttpBrowsing from './baseRouting_network_call/HttpBrowsing';
 import Store from './baseRouting_network_call/Store.jsx';
 
@@ -66,26 +66,31 @@ const App: React.FC = () => {
   const [adminRouteData, setAdminRouteData] = useState([])
   const [permission, setPermission] = useState([])
   const [isLoading, setIsloading] = useState(true)
+  const shouldLog = useRef(true);
   const handleToken = (token) => {
     setToken(token)
   }
 
   useEffect(() => {
-    HttpBrowsing.get('/side-bar-menus/')
-      .then((res) => {
 
-        setAdminRouteData(res.data)
-      })
-      .catch(err => setIsloading(false))
+    if (shouldLog.current) {
+      shouldLog.current = false;
 
-    HttpBrowsing.get('/me/')
-      .then((res) => {
-        setPermission(res.data.results.user_permissions)
-        setIsloading(false)
+      HttpBrowsing.get('/side-bar-menus/')
+        .then((res) => {
 
-      })
-      .catch(err => setIsloading(false))
+          setAdminRouteData(res.data)
+        })
+        .catch(err => setIsloading(false))
 
+      HttpBrowsing.get('/me/')
+        .then((res) => {
+          setPermission(res.data.results.user_permissions)
+          setIsloading(false)
+
+        })
+        .catch(err => setIsloading(false))
+    }
 
   }, [token])
 
