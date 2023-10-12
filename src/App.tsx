@@ -10,7 +10,8 @@ import userPermission from './pages/permision.json';
 import { useEffect, useRef, useState } from 'react';
 import HttpBrowsing from './baseRouting_network_call/HttpBrowsing';
 import Store from './baseRouting_network_call/Store.jsx';
-
+import UserData from './pages/user.json';
+import sidebarData from './pages/sidebar.json';
 interface routeDetails {
   path: string;
   component: React.ComponentType<any>; // The component can receive any props
@@ -93,10 +94,27 @@ const App: React.FC = () => {
     }
 
   }, [token])
+  const user_permission = UserData.user_permissions;
+  const modularFilter = (user_permission, sidebarData) => {
+    const overallAppPermission = userPermission.map(i => i.split('.')[0]);
+    const finalAppPermission = [...new Set(overallAppPermission)]
+    const overallModalPermission = userPermission.map(i => i.split('_')[1])
+    const finalModalPermission = [...new Set(overallModalPermission)]
+    console.log("This is overallAppPermission", overallAppPermission, finalAppPermission, finalModalPermission)
 
 
+    const sidebarFilter = sidebarData.filter(item => finalAppPermission.includes(item.app_label))
+    // .map((data) => data.app_models.filter(d => finalModalPermission.includes(d.model_name.toLowerCase()))
+    console.log("This is sidebar filter", sidebarFilter)
+    const finalSidebarFilter = sidebarFilter.map(i => ({ ...i, app_models: i.app_models.filter(d => finalModalPermission.includes(d.model_name.toLowerCase())) }))
+    console.log("final sidebar", sidebarFilter, finalSidebarFilter)
+
+    return finalSidebarFilter
+  }
+
+  modularFilter(user_permission, sidebarData)
   const adminRoute: adminRouteProps = {
-    adminRoutes: adminRouteData || [],
+    adminRoutes: modularFilter(user_permission, sidebarData) || [],
     adminComponent: AdminDashboard,
     adminLayout: Layout,
     userPermission: permission || []
@@ -107,16 +125,15 @@ const App: React.FC = () => {
   return (
     <Store>
       {
-        isLoading ? <p>Loading</p>
-          :
 
-          <Routing
-            routeProperties={data}
-            loginPage={Login}
-            adminRoute={adminRoute}
-            userPermission={permission}
-            handleToken={handleToken}
-          />}
+
+        <Routing
+          routeProperties={data}
+          loginPage={Login}
+          adminRoute={adminRoute}
+          userPermission={UserData.user_permissions}
+          handleToken={handleToken}
+        />}
     </Store>
   )
 }

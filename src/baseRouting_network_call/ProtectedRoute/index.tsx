@@ -66,11 +66,16 @@ const ProtectedRoute = (props: defaultProps) => {
     //         setIsLoggedIn(false);
     //     }
     // })
+
+    console.log("This is isLoggedIn", isLoggedIn)
+    console.log("This is admin route", adminRoute)
+
+
     if (isLoggedIn && isLoginPage && adminRoute) {
         const Login = loginPage
-
+        console.log('Entered here')
         return (
-            <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_models[0].verbose_name}`} />
+            <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_label}/${(adminRoute.adminRoutes[0].app_models[0].model_name).toLowerCase()}`} />
             // <Login />
         )
     }
@@ -82,7 +87,7 @@ const ProtectedRoute = (props: defaultProps) => {
         )
     } else if (isLoggedIn === false && !isLoginPage) {
         return (
-            <Navigate to='/login' />
+            <Navigate to='/admin' />
         )
     } else if (isLoggedIn === false && isLoginPage) {
         const Login = loginPage

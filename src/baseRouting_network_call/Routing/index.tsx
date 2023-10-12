@@ -64,7 +64,7 @@ const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRout
             handleToken(tokenStore)
         }
     }, [tokenStore])
-
+    console.log("This is adminRoute", adminRoute)
     return (
         <Router>
             <Routes>
@@ -97,7 +97,7 @@ const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRout
 
                             return <Route
                                 key={route.model_name}
-                                path={`/admin/${item.app_name}/${route.model_name}`}
+                                path={`/admin/${item.app_label}/${(route.model_name).toLowerCase()}`}
                                 element={
                                     <ProtectedRoute>
                                         {AdminLayout ? <AdminLayout routeDetails={adminRoute.adminRoutes} >
@@ -124,9 +124,9 @@ const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRout
                 <Route
                     path="/dashboard"
                     element={
-                        <ProtectedRoute isLoginPage={true} loginPage={loginPage} >
+                        <ProtectedRoute isLoginPage={true} loginPage={loginPage} adminRoute={adminRoute} >
                             {adminRoute && adminRoute.adminRoutes.length ?
-                                <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_name}/${adminRoute.adminRoutes[0].app_models[0].model_name}`} />
+                                <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_label}/${(adminRoute.adminRoutes[0].app_models[0].model_name).toLowerCase()}`} />
                                 : ''}
                         </ProtectedRoute>
                     }
@@ -134,15 +134,13 @@ const Routing: React.FC<RoutingProps> = ({ routeProperties, loginPage, adminRout
                 <Route
                     path="/admin"
                     element={
-                        <ProtectedRoute isLoginPage={true} loginPage={loginPage} >
+                        <ProtectedRoute isLoginPage={true} loginPage={loginPage} adminRoute={adminRoute}>
                             {adminRoute && adminRoute.adminRoutes.length
-                                ? <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_name}/${adminRoute.adminRoutes[0].app_models[0].model_name}`} />
+                                ? <Navigate to={`/admin/${adminRoute.adminRoutes[0].app_label}/${(adminRoute.adminRoutes[0].app_models[0].model_name).toLowerCase()}`} />
                                 : ''}
                         </ProtectedRoute>
                     }
                 />
-
-
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>

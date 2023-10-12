@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { ForeignKeyToNameConverter, PermissionChecker } from "../utils/PermissionChecker";
 import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useRef, useState } from "react";
 import HttpBrowsing from "../baseRouting_network_call/HttpBrowsing";
-
+import Group from './Group';
 interface userPermission {
     userPermission: string[]
 }
@@ -34,6 +34,21 @@ interface propsDetails {
     routeDetails: adminRouteProps
 }
 
+
+const selectRouteBasedComponent = (pathname, userPermission, routeDetails) => {
+    console.log("This is pathname", pathname)
+    const selectedRoute = pathname.split('/')[pathname.split('/').length - 1];
+    console.log("This is selected Route", selectedRoute)
+
+    if (selectedRoute === 'group') {
+        return <Group pathname={pathname} routeDetails={routeDetails} userPermission={userPermission} />
+    } else {
+        return <h2>Hello</h2>
+    }
+}
+
+
+
 const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }) => {
 
     const apiListViewCall = useRef(true);
@@ -53,14 +68,16 @@ const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }
 
 
     const { permissionCheckDelete, permissionCheckAdd, permissionCheckChange } = PermissionChecker(pathname, userPermission)
-
+    console.log("This is permission checker", pathname)
+    console.log("This is user permission", userPermission)
     const splitPath = pathname.split('/');
     const appName = splitPath[2];
     const modalName = splitPath[3];
-    const apiLink = routeDetails && routeDetails.length && routeDetails.filter((item: { app_name: string; }) => item.app_name === appName)[0].app_models
-        .filter(i => i.model_name === modalName)[0].api_link.split('/v1')[1];
+    console.log("This is route details", routeDetails)
+    const apiLink = routeDetails && routeDetails.length && routeDetails.filter((item: { app_label: string; }) => item.app_label === appName)[0].app_models
+        .filter(i => (i.model_name).toLowerCase() === modalName)[0].api_url;
 
-
+    console.log("This is api link", apiLink)
     useEffect(() => {
         if (apiListViewCall.current) {
             apiListViewCall.current = false;
@@ -133,77 +150,10 @@ const AdminDashboard: React.FC<propsDetails> = ({ userPermission, routeDetails }
 
     }, [tableHeader])
     console.log("dynamicFilterList", dynamicFilterList)
+    console.log("permissionCheckAdd", permissionCheckAdd, permissionCheckChange, permissionCheckDelete)
     return (
         <div className="admin-table px-6 py-6 flex flex-col gap-5">
-            <div className="flex justify-end flex-col" >
-                {dynamicFilterList.length ? dynamicFilterList.map((item, index) => (<div key={index} >
-                    {
-                        item.choices && item.choices.length ?
-                            <div className="flex flex-col" >
-                                <label htmlFor="cars">Choose a car:</label>
-                                <select key={item.name} name="cars" id="cars">
-                                    <option>Choose a car</option>
-                                    {item.choices.map((d, ind) => (
-                                        <>
-                                            <option value={d[0]}>{d[1]}</option>
-                                        </>
-                                    ))}
-                                </select>
-                            </div>
-                            :
-                            <div className="flex flex-col" >
-                                <label htmlFor="cars">{item.name}</label>
-                                <input type="text" placeholder={item.name} />
-                            </div>
-                    }
-
-                </div>
-
-                )) : ''}
-                {
-                    permissionCheckAdd.length ? <BorderButton title={'CREATE'} /> : ''
-                }
-
-            </div>
-
-            <table>
-                <tr>
-                    {
-                        tableHeader.length ?
-                            <>
-                                {tableHeader.map((item) => (
-                                    <>
-                                        <th key={item} >{item}</th>
-
-                                    </>
-
-                                ))}
-                                <th>Action</th>
-                            </>
-                            : ''
-                    }
-
-                </tr>
-                {
-                    tableData.length && tableData.map((item) => (
-                        <tr key={item[0]} >
-                            {item.map((d: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined, index: Key | null | undefined) => <td key={index}>{d}</td>)}
-                            <td>
-                                <div className="flex gap-3">
-                                    {
-                                        permissionCheckChange.length ? <img src={edit} alt="edit" height={15} width={15} /> : ''
-                                    }
-
-                                    {
-                                        permissionCheckDelete.length ? <img src={remove} alt="remove" height={12} width={12} /> : ''
-                                    }
-
-                                </div>
-                            </td>
-                        </tr>
-                    ))
-                }
-            </table>
+            {selectRouteBasedComponent(pathname, userPermission, routeDetails)}
         </div>
     )
 }

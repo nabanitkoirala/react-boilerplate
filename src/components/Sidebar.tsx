@@ -54,7 +54,7 @@ const Sidebar: React.FC<LayoutProps> = ({ setShow, routeDetails }) => {
     setShow(false);
   };
 
-
+  console.log("This is route details", routeDetails)
   const data = routeDetails;
   const mainSidebarDetails = data && data.map((item: { verbose_name: string; app_name: string; app_models: any[]; }) => {
     return ({
@@ -63,8 +63,8 @@ const Sidebar: React.FC<LayoutProps> = ({ setShow, routeDetails }) => {
         {
           icon: homeIcon,
           title: item.verbose_name,
-          link: `/admin/${item.app_name}`,
-          options: item.app_models.map(d => ({ title: d.verbose_name, link: `/admin/${item.app_name}/${d.model_name}` }))
+          link: `/admin/${item.app_label}`,
+          options: item.app_models.map(d => ({ title: d.verbose_name, link: `/admin/${item.app_label}/${(d.model_name).toLowerCase()}` }))
         },
       ]
 

@@ -15,18 +15,19 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        localStorage.setItem("access_token", 'asdasdaskjdlajsldjlasjdl');
+        navigate('/dashboard');
+        // HttpBrowsing.post('/login/', { username: name, password }, true)
+        //     .then(res => {
 
-        HttpBrowsing.post('/login/', { username: name, password }, true)
-            .then(res => {
-
-                setTokenStore(res.data.token)
-                localStorage.setItem("access_token", res.data.token);
-                // localStorage.setItem("refreshToken", res.data.refreshToken);
-                navigate('/dashboard');
-            })
-            .catch(err => {
-                console.log("this is error", err.response);
-            })
+        //         setTokenStore(res.data.token)
+        //         localStorage.setItem("access_token", res.data.token);
+        //         // localStorage.setItem("refreshToken", res.data.refreshToken);
+        //         navigate('/dashboard');
+        //     })
+        //     .catch(err => {
+        //         console.log("this is error", err.response);
+        //     })
     }
     return (
         <div>
